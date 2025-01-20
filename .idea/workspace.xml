@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75960bca-df6b-4613-8d3b-c1ddbb3e1d05" name="Changes" comment="updated to use .env file and gets feedback from openai">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+    <list default="true" id="75960bca-df6b-4613-8d3b-c1ddbb3e1d05" name="Changes" comment="added requirements.txt">
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +92,7 @@
       <option name="presentableId" value="Default" />
       <updated>1736957723753</updated>
       <workItem from="1736957725052" duration="840000" />
-      <workItem from="1736964647772" duration="27104000" />
+      <workItem from="1736964647772" duration="27171000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -128,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737386268640</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added requirements.txt">
+      <option name="closed" value="true" />
+      <created>1737394435829</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737394435829</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,7 +156,8 @@
     <MESSAGE value="added streamlit and first features" />
     <MESSAGE value="stable version with local MongoDB. lots to do, untidy." />
     <MESSAGE value="updated to use .env file and gets feedback from openai" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated to use .env file and gets feedback from openai" />
+    <MESSAGE value="added requirements.txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="added requirements.txt" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/gym_tracking_app$app.coverage" NAME="app Coverage Results" MODIFIED="1737022530791" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
