@@ -33,7 +33,7 @@ except Exception as e:
     print(e)
 
 exercises = [
-    "Select an option", "Bench Press", "Push-Ups", "Incline Dumbbell Press", "Chest Fly",
+    "Bench Press", "Push-Ups", "Incline Dumbbell Press", "Chest Fly",
     "Pull-Ups", "Deadlifts", "Bent Over Rows", "Lat Pulldown",
     "Squats", "Leg Press", "Lunges", "Bulgarian Split Squats",
     "Bicep Curls", "Tricep Dips", "Hammer Curls", "Overhead Tricep Extension",
@@ -115,14 +115,14 @@ if selected_user:
         )
 
         # Step 3: Handle dropdown actions
-        if exercise != "Select an option":
+        if exercise and exercise != "Choose an option":
             if "current_exercise" not in st.session_state or st.session_state["current_exercise"] != exercise:
                 st.session_state["current_exercise"] = exercise
                 add_exercise(st.session_state["workout_id"], exercise, db)
                 st.write(f"Exercise {exercise} added!")
             # Input fields for reps and weight
             reps = st.number_input("How many reps?", value=0, min_value=0, step=1)
-            weight = st.number_input("How much weight?", value=0.0, step=0.5)
+            weight = st.number_input("How much weight?", value=0, min_value=0, step=1)
 
             # Log Set button
             if st.button("Log set"):
