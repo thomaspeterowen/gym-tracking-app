@@ -3,6 +3,15 @@ import streamlit as st
 from pymongo import MongoClient
 from datetime import datetime
 from bson.objectid import ObjectId
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+openai_api_key = os.getenv("OPENAI_API_KEY")
+mongo_uri = os.getenv("MONGO_URI")
+
+OpenAI.api_key = openai_api_key
 
 st.title("Gym Tracking App")
 
@@ -27,7 +36,7 @@ def select_exercise():
         print(f"{i}. {exercise}")
 
 # Connect to server
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(mongo_uri)
 # Specify the database
 db = client["gym_tracker"]
 # create or get collection
@@ -108,11 +117,7 @@ if selected_user:
             if st.button("Log set"):
                 add_rep(st.session_state["workout_id"], exercise, reps, weight, db)
                 st.write(f"Set logged: {reps} reps at {weight} kg.")
-
-            if st.button("Show Exercise"):
                 workout = get_workout(st.session_state["workout_id"], db)
-                #st.write("Current Workout:", workout)
-                # Header for the workout
                 st.header(f"Workout for {workout['user']} on {workout['date']}")
                 # Loop through exercises and display them
                 for exercise in workout["exercises"]:
@@ -121,14 +126,39 @@ if selected_user:
                     for i, set_ in enumerate(exercise["sets"], start=1):
                         st.write(f"Set {i}: {set_['reps']} reps at {set_['weight']} kg")
 
+
             # Log Exercise button to reset dropdown
             if st.button("Finish Workout"):
                 #Increment the key to reset the dropdown
                 #st.session_state["dropdown_key"] += 1
                 #st.rerun()  # Immediately rerun the script
-                st.write("Workout finished! Click View History to see your progress.")
-
+                #st.write("Workout finished! Click View History to see your progress.")
+                client = OpenAI()
+                workout = get_workout(st.session_state["workout_id"], db)
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": "You are a fitness coach."},
+                        {"role": "user", "content": f"provide motivations words for the completed workout attached, don't respond like you are answering a question, just provide the facts and motivation: {workout}"}
+                    ]
+                )
+                st.write(response.choices[0].message.content)
 
     elif option == "View History":
         st.header("View History")
+
+        workout_count = db.workouts.count_documents({"user": selected_user})
+
+        if workout_count == 0:
+            st.write("No workouts found.")
+        else:
+            workouts = db.workouts.find({"user": selected_user}).sort("date", 1)
+            for workout in workouts:
+                with st.expander(f"Date: {workout['date']}"):
+                    for exercise in workout["exercises"]:
+                        st.markdown(f"**Exercise: {exercise['name']}**")
+
+                        # display sets for each exercise
+                        for i, set_ in enumerate(exercise["sets"], start=1):
+                            st.write(f"- Set {i}: {set_['reps']} reps at {set_['weight']} kg")
 
