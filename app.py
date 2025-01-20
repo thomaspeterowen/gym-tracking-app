@@ -1,6 +1,8 @@
 
 import streamlit as st
 from pymongo import MongoClient
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 from datetime import datetime
 from bson.objectid import ObjectId
 from openai import OpenAI
@@ -20,6 +22,15 @@ users = ["", "Tommy", "Simon"]
 selected_user = st.selectbox("Select a user:", users)
 st.session_state["selected_user"] = selected_user
 
+MONGO_URI = os.getenv("MONGO_URI")
+# Create a new client and connect to the server
+client = MongoClient(MONGO_URI, server_api=ServerApi('1'))
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 
 exercises = [
     "Select an option", "Bench Press", "Push-Ups", "Incline Dumbbell Press", "Chest Fly",
@@ -36,7 +47,7 @@ def select_exercise():
         print(f"{i}. {exercise}")
 
 # Connect to server
-client = MongoClient(mongo_uri)
+#client = MongoClient(mongo_uri)
 # Specify the database
 db = client["gym_tracker"]
 # create or get collection
