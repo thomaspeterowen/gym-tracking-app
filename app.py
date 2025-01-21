@@ -8,14 +8,14 @@ from pymongo.server_api import ServerApi
 from openai import OpenAI
 import streamlit as st
 
-# Configurations
+# CONFIGURATIONS
 load_dotenv()
 mongo_uri = os.getenv("MONGO_URI")
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Constants
-users = ["", "Tommy", "Simon"]
-exercises = [
+# CONSTANTS
+USERS = ["", "Tommy", "Simon"]
+EXERCISES = [
     "Bench Press", "Push-Ups", "Incline Dumbbell Press", "Chest Fly",
     "Pull-Ups", "Deadlifts", "Bent Over Rows", "Lat Pulldown",
     "Squats", "Leg Press", "Lunges", "Bulgarian Split Squats",
@@ -25,9 +25,6 @@ exercises = [
     ]
 
 OpenAI.api_key = openai_api_key
-
-st.title("Gym Tracking App")
-
 def init_session_state(key, default_value):
     if key not in st.session_state:
         st.session_state[key] = default_value
@@ -37,9 +34,7 @@ init_session_state("workout_id", None)
 init_session_state("dropdown_key", 0)
 init_session_state("current_exercise", None)
 
-
-selected_user = st.selectbox("Select a user:", users)
-st.session_state["selected_user"] = selected_user
+# DATABASE
 
 MONGO_URI = os.getenv("MONGO_URI")
 # Create a new client and connect to the server
@@ -52,49 +47,58 @@ except Exception as e:
     st.error("Not connected to MongoDB! Please check the configuration.")
     print(e)
 
-# Connect to server
-#client = MongoClient(mongo_uri)
-# Specify the database
 db = client["gym_tracker"]
-# create or get collection
-workouts = db["workouts"]
 
 # create workout
 def create_workout(user, db):
-
     workout_doc = {
         "user": user,
         "date": str(datetime.now().date()),
         "exercises": []
     }
-
-    result = db.workouts.insert_one(workout_doc)
+    result = db["workouts"].insert_one(workout_doc)
     return str(result.inserted_id)  # Return the workout ID as a string
 
 
 # update workout add exercise
 def add_exercise(workout_id, exercise_name, db):
     # Check if the exercise already exists
-    workout = db.workouts.find_one({"_id": ObjectId(workout_id)})
+    workout = db["workouts"].find_one({"_id": ObjectId(workout_id)})
     if workout:
         existing_exercises = [ex["name"] for ex in workout["exercises"]]
         if exercise_name not in existing_exercises:
             # Add the exercise
-            db.workouts.update_one(
+            db["workouts"].update_one(
                 {"_id": ObjectId(workout_id)},
                 {"$push": {"exercises": {"name": exercise_name, "sets": []}}}
             )
 
 # update exercise add rep
 def add_rep(workout_id, exercise_name, reps, weight, db):
-    db.workouts.update_one(
+    db["workouts"].update_one(
         {"_id": ObjectId(workout_id), "exercises.name": exercise_name},
         {"$push": {"exercises.$.sets": {"reps": reps, "weight": weight}}}
     )
 
 # output workout
 def get_workout(workout_id, db):
-    return db.workouts.find_one({"_id": ObjectId(workout_id)})
+    return db["workouts"].find_one({"_id": ObjectId(workout_id)})
+
+def delete_workout(workout_id, db):
+    pass
+
+def delete_exercise(exercise_id, db):
+    pass
+
+def delete_rep(workout_id, exercise_name, db):
+    pass
+
+# APP
+
+st.title("Gym Tracking App")
+
+selected_user = st.selectbox("Select a user:", USERS)
+st.session_state["selected_user"] = selected_user
 
 if selected_user:
     st.session_state["selected_user"] = selected_user
@@ -112,13 +116,13 @@ if selected_user:
                 st.write("Please select a user to create a workout.")
 
         # Step 1: Initialise session state for the dropdown key
-        if "dropdown_key" not in st.session_state:
-            st.session_state["dropdown_key"] = 0
+        #if "dropdown_key" not in st.session_state:
+        #    st.session_state["dropdown_key"] = 0
 
         # Step 2: Create the dropdown with a dynamic key
         exercise = st.selectbox(
             "Select an exercise:",
-            exercises,
+            EXERCISES,
             index=None,
             key=f"dropdown_{st.session_state['dropdown_key']}"
         )
@@ -168,12 +172,12 @@ if selected_user:
     elif option == "View History":
         st.header("View History")
         with st.spinner("Fetching workout details..."):
-            workout_count = db.workouts.count_documents({"user": selected_user})
+            workout_count = db["workouts"].count_documents({"user": selected_user})
 
             if workout_count == 0:
                 st.write("No workouts found.")
             else:
-                workouts = db.workouts.find({"user": selected_user}).sort("date", 1)
+                workouts = db["workouts"].find({"user": selected_user}).sort("date", 1)
                 for workout in workouts:
                     with st.expander(f"Date: {workout['date']}"):
                         for exercise in workout["exercises"]:
