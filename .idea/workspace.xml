@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75960bca-df6b-4613-8d3b-c1ddbb3e1d05" name="Changes" comment="fixed issues with &quot;none&quot; exercises">
+    <list default="true" id="75960bca-df6b-4613-8d3b-c1ddbb3e1d05" name="Changes" comment="bug fixes and tidied up code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -93,7 +93,7 @@
       <option name="presentableId" value="Default" />
       <updated>1736957723753</updated>
       <workItem from="1736957725052" duration="840000" />
-      <workItem from="1736964647772" duration="34449000" />
+      <workItem from="1736964647772" duration="35690000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -151,7 +151,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737396290872</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="bug fixes and tidied up code">
+      <option name="closed" value="true" />
+      <created>1737463591719</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737463591719</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,7 +184,8 @@
     <MESSAGE value="added requirements.txt" />
     <MESSAGE value="added openai dependency" />
     <MESSAGE value="fixed issues with &quot;none&quot; exercises" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed issues with &quot;none&quot; exercises" />
+    <MESSAGE value="bug fixes and tidied up code" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fixes and tidied up code" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/gym_tracking_app$app.coverage" NAME="app Coverage Results" MODIFIED="1737022530791" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

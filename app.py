@@ -107,7 +107,7 @@ if selected_user:
         if not st.session_state.get("workout_id"):
             if st.session_state["selected_user"]:
                 st.session_state["workout_id"] = create_workout(st.session_state["selected_user"], db)
-                st.write("Workout created!")
+                st.success("Workout created successfully!")
             else:
                 st.write("Please select a user to create a workout.")
 
@@ -128,7 +128,7 @@ if selected_user:
             if "current_exercise" not in st.session_state or st.session_state["current_exercise"] != exercise:
                 st.session_state["current_exercise"] = exercise
                 add_exercise(st.session_state["workout_id"], exercise, db)
-                st.write(f"Exercise {exercise} added!")
+                st.success(f"Exercise {exercise} added!")
             # Input fields for reps and weight
             reps = st.number_input("How many reps?", value=0, min_value=0, step=1)
             weight = st.number_input("How much weight?", value=0, min_value=0, step=1)
@@ -150,35 +150,36 @@ if selected_user:
 
             # Log Exercise button to reset dropdown
             if st.button("Finish Workout"):
-                client = OpenAI()
-                workout = get_workout(st.session_state["workout_id"], db)
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {"role": "system", "content": "You are a fitness coach."},
-                        {"role": "user", "content": f"provide motivations words for the completed workout attached, don't respond like you are answering a question, just provide the facts and motivation: {workout}"}
-                    ]
-                )
-                st.write(response.choices[0].message.content)
-                # Perform any finalisation tasks
-                st.session_state.clear()
-                st.write("Workout finished! Session state reset.")
+                with st.spinner("Fetching workout feedback..."):
+                    client = OpenAI()
+                    workout = get_workout(st.session_state["workout_id"], db)
+                    response = client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {"role": "system", "content": "You are a fitness coach."},
+                            {"role": "user", "content": f"provide motivations words for the completed workout attached, don't respond like you are answering a question, just provide the facts and motivation: {workout}"}
+                        ]
+                    )
+                    st.write(response.choices[0].message.content)
+                    # Perform any finalisation tasks
+                    st.session_state.clear()
+                    st.write("Workout finished! Session state reset.")
 
     elif option == "View History":
         st.header("View History")
+        with st.spinner("Fetching workout details..."):
+            workout_count = db.workouts.count_documents({"user": selected_user})
 
-        workout_count = db.workouts.count_documents({"user": selected_user})
+            if workout_count == 0:
+                st.write("No workouts found.")
+            else:
+                workouts = db.workouts.find({"user": selected_user}).sort("date", 1)
+                for workout in workouts:
+                    with st.expander(f"Date: {workout['date']}"):
+                        for exercise in workout["exercises"]:
+                            st.markdown(f"**Exercise: {exercise['name']}**")
 
-        if workout_count == 0:
-            st.write("No workouts found.")
-        else:
-            workouts = db.workouts.find({"user": selected_user}).sort("date", 1)
-            for workout in workouts:
-                with st.expander(f"Date: {workout['date']}"):
-                    for exercise in workout["exercises"]:
-                        st.markdown(f"**Exercise: {exercise['name']}**")
-
-                        # display sets for each exercise
-                        for i, set_ in enumerate(exercise["sets"], start=1):
-                            st.write(f"- Set {i}: {set_['reps']} reps at {set_['weight']} kg")
+                            # display sets for each exercise
+                            for i, set_ in enumerate(exercise["sets"], start=1):
+                                st.write(f"- Set {i}: {set_['reps']} reps at {set_['weight']} kg")
 
