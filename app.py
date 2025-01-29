@@ -53,7 +53,7 @@ db = client["gym_tracker"]
 def create_workout(user, db):
     workout_doc = {
         "user": user,
-        "date": str(datetime.now().date()),
+        "date": str(datetime.now()),
         "exercises": []
     }
     result = db["workouts"].insert_one(workout_doc)
@@ -84,8 +84,31 @@ def add_rep(workout_id, exercise_name, reps, weight, db):
 def get_workout(workout_id, db):
     return db["workouts"].find_one({"_id": ObjectId(workout_id)})
 
+def get_last_exercise(user, db, exercise_name):
+    last_workout = db["workouts"].find_one(
+        {"user": user, "exercises.name": exercise_name},
+        sort=[("date", -1)]  # Sort by full timestamp descending
+    )
+
+    if last_workout:
+        for exercise in last_workout["exercises"]:
+            if exercise["name"] == exercise_name:
+                return exercise["sets"] if exercise["sets"] else None
+
+    return None  # If no matching exercise is found
+
+def get_workouts(user, db):
+    return db["workouts"].find({"user": user}).sort("date", 1)
+
 def delete_workout(workout_id, db):
-    pass
+    try:
+        result = db["workouts"].delete_one({"_id": ObjectId(workout_id)})
+        if result.deleted_count > 0:
+            st.success(f"Workout with ID {workout_id} was successfully deleted.")
+        else:
+            st.warning(f"No workout found with ID {workout_id}.")
+    except Exception as e:
+        st.error(f"An error occurred while deleting the workout: {e}")
 
 def delete_exercise(exercise_id, db):
     pass
@@ -95,7 +118,7 @@ def delete_rep(workout_id, exercise_name, db):
 
 # APP
 
-st.title("Gym Tracking App")
+st.title("✅ 🏋️‍♂️ 💪 Gym Tracking App 💪 🏋️‍♀️ ✅")
 
 selected_user = st.selectbox("Select a user:", USERS)
 st.session_state["selected_user"] = selected_user
@@ -115,11 +138,7 @@ if selected_user:
             else:
                 st.write("Please select a user to create a workout.")
 
-        # Step 1: Initialise session state for the dropdown key
-        #if "dropdown_key" not in st.session_state:
-        #    st.session_state["dropdown_key"] = 0
-
-        # Step 2: Create the dropdown with a dynamic key
+        # Create the dropdown with a dynamic key
         exercise = st.selectbox(
             "Select an exercise:",
             EXERCISES,
@@ -127,15 +146,23 @@ if selected_user:
             key=f"dropdown_{st.session_state['dropdown_key']}"
         )
 
-        # Step 3: Handle dropdown actions
+        # Handle dropdown actions
         if exercise and exercise != "Choose an option":
             if "current_exercise" not in st.session_state or st.session_state["current_exercise"] != exercise:
                 st.session_state["current_exercise"] = exercise
                 add_exercise(st.session_state["workout_id"], exercise, db)
                 st.success(f"Exercise {exercise} added!")
             # Input fields for reps and weight
+
             reps = st.number_input("How many reps?", value=0, min_value=0, step=1)
             weight = st.number_input("How much weight?", value=0, min_value=0, step=1)
+
+            last_exercise = get_last_exercise(selected_user, db, exercise)
+
+            if last_exercise:
+                last_set = last_exercise[-1]  # Get the most recent set
+                st.write(f"Last set logged was: {last_set['reps']} reps at {last_set['weight']} kg.")
+
 
             # Log Set button
             if st.button("Log set"):
@@ -169,6 +196,7 @@ if selected_user:
                     st.session_state.clear()
                     st.write("Workout finished! Session state reset.")
 
+
     elif option == "View History":
         st.header("View History")
         with st.spinner("Fetching workout details..."):
@@ -177,13 +205,14 @@ if selected_user:
             if workout_count == 0:
                 st.write("No workouts found.")
             else:
-                workouts = db["workouts"].find({"user": selected_user}).sort("date", 1)
+                workouts = get_workouts(selected_user, db)
                 for workout in workouts:
                     with st.expander(f"Date: {workout['date']}"):
                         for exercise in workout["exercises"]:
                             st.markdown(f"**Exercise: {exercise['name']}**")
-
-                            # display sets for each exercise
+                            # Display sets for each exercise
                             for i, set_ in enumerate(exercise["sets"], start=1):
                                 st.write(f"- Set {i}: {set_['reps']} reps at {set_['weight']} kg")
-
+                        # Add delete button and refresh on delete
+                        if st.button("Delete Workout", key=f"delete_{workout['_id']}"):
+                            delete_workout(str(workout["_id"]), db)

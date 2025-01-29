@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75960bca-df6b-4613-8d3b-c1ddbb3e1d05" name="Changes" comment="added success statements and spinner when loading">
+    <list default="true" id="75960bca-df6b-4613-8d3b-c1ddbb3e1d05" name="Changes" comment="organised code, refactored code into functions and added placeholder functions for delete operations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     </list>
@@ -93,7 +93,7 @@
       <option name="presentableId" value="Default" />
       <updated>1736957723753</updated>
       <workItem from="1736957725052" duration="840000" />
-      <workItem from="1736964647772" duration="37122000" />
+      <workItem from="1736964647772" duration="51185000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -167,7 +167,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737470226268</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="organised code, refactored code into functions and added placeholder functions for delete operations">
+      <option name="closed" value="true" />
+      <created>1737471384514</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1737471384514</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,7 +214,8 @@
     <MESSAGE value="fixed issues with &quot;none&quot; exercises" />
     <MESSAGE value="bug fixes and tidied up code" />
     <MESSAGE value="added success statements and spinner when loading" />
-    <option name="LAST_COMMIT_MESSAGE" value="added success statements and spinner when loading" />
+    <MESSAGE value="organised code, refactored code into functions and added placeholder functions for delete operations" />
+    <option name="LAST_COMMIT_MESSAGE" value="organised code, refactored code into functions and added placeholder functions for delete operations" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/gym_tracking_app$app.coverage" NAME="app Coverage Results" MODIFIED="1737022530791" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
